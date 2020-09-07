@@ -17,7 +17,11 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        native-lib.cpp)
+        native-lib.cpp
+        Pixel.cpp
+        Image.cpp
+        )
+include_directories(src/main/cpp/include/)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -42,3 +46,4 @@ target_link_libraries( # Specifies the target library.
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib})
+
