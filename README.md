@@ -1,8 +1,8 @@
 # Android_Sobel_App
 An application for mobile devices to apply sobel effect to images
 
-![alt text](https://github.com/Pokoi/Android_Sobel_App/tree/master/examples/original.jpeg "Original preview") 
-![alt text](https://github.com/Pokoi/Android_Sobel_App/tree/master/examples/sobel.jpeg "Sobel preview")  
+![alt text](https://github.com/Pokoi/Android_Sobel_App/blob/master/examples/original.jpeg "Original preview") 
+![alt text](https://github.com/Pokoi/Android_Sobel_App/blob/master/examples/sobel.jpeg "Sobel preview")  
 
 
 ## Getting Started
