@@ -35,7 +35,6 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <android/bitmap.h>
 
 class Image {
 
@@ -75,7 +74,7 @@ public:
     Image(
             std::uint16_t width,
             std::uint16_t height,
-            int components []
+            float components []
     );
 
     /**
@@ -139,6 +138,12 @@ public:
     @brief Calculates the squared difference between the color of two pixels
     */
     float colour_difference(Pixel& first, Pixel& second);
+
+    /**
+     @brief Gets the colour components of the image and saves them into the given buffer
+     @param buffer The buffer where stores the colour information
+     */
+    void copy_colour_components(float * buffer);
 
 
 };

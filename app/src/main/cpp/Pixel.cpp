@@ -29,6 +29,37 @@
 
 #include "Pixel.h"
 
+void Pixel::convert_xyz_to_luv(float* buffer)
+{
+    float Xr = 0.33f;
+    float Yr = 0.33f;
+    float Zr = 0.33f;
+    float yr;
+    float us;
+    float vs;
+    float usr;
+    float vsr;
+    float e;
+    float k;
+
+    yr = buffer[1] * 3.f;         //< It's the same that divide buffer[1] / Yr
+    us = 4 * buffer[0] / (buffer[0] + 15 * buffer[1] + 3 * buffer[2]);
+    vs = 9 * buffer[1] / (buffer[0] + 15 * buffer[1] + 3 * buffer[2]);
+    usr = 4 * Xr / (Xr + 15 * Yr + 2 * Zr);
+    vsr = 9 * Yr / (Xr + 15 * Yr + 3 * Zr);
+
+    e = 216.0f / 24389.f;
+    k = 24389.0f / 27.f;
+
+    luv_components.l = yr > e ?
+                       116.f * pow(yr, 0.33) - 16
+                              : k * yr;
+
+    luv_components.u = 13.0f * luv_components.l * (us - usr);
+    luv_components.v = 13.0f * luv_components.l * (vs - vsr);
+
+}
+
 void Pixel::convert_luv_to_rgb()
 {
     float Xr = 0.33f;

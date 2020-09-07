@@ -34,17 +34,18 @@
 Image::Image(
                 std::uint16_t width,
                 std::uint16_t height,
-                int components []
+                float components []
             ) :
                 width(width),
                 height(height),
                 pixels(width* height)
 {
-    for(int i = 0, component_iterator = 0; i < pixels.size(); ++i)
+
+    for(int i = 0; i < pixels.size(); ++i)
     {
-         pixels[i].rgb_components.red   = components[component_iterator];
-         pixels[i].rgb_components.green = components[++component_iterator];
-         pixels[i].rgb_components.blue  = components[++component_iterator];
+         pixels[i].rgb_components.red   = components[i * 3];
+         pixels[i].rgb_components.green = components[i * 3 + 1];
+         pixels[i].rgb_components.blue  = components[i * 3 + 2];
     }
 }
 
@@ -86,7 +87,6 @@ void Image::sobel_colour()
         float diagonal_2_edge   = colour_difference(pixels[iterator - width + 1], pixels[iterator + width - 1]);
         float vertical_edge     = colour_difference(pixels[iterator - width], pixels[iterator + width]);
 
-
         float val = horizontal_edge + diagonal_1_edge + diagonal_2_edge + vertical_edge;
         if (val != 0)
         {
@@ -104,11 +104,12 @@ void Image::sobel_colour()
 
     while (iterator < buffer.size())
     {
-        buffer[iterator] = ((buffer[iterator] - min) / max - min);
+        // Normalize the solution
+        buffer[iterator] = min + ((buffer[iterator] - min) / max);
 
-        pixels[iterator].rgb_components.red = 1.f - buffer[iterator];
-        pixels[iterator].rgb_components.green = 1.f - buffer[iterator];
-        pixels[iterator].rgb_components.blue = 1.f - buffer[iterator];
+        pixels[iterator].rgb_components.red     =  1 - buffer[iterator];
+        pixels[iterator].rgb_components.green   =  1 - buffer[iterator];
+        pixels[iterator].rgb_components.blue    =  1 - buffer[iterator];
 
         ++iterator;
     }
@@ -116,6 +117,8 @@ void Image::sobel_colour()
 
 float Image::colour_difference(Pixel& first, Pixel& second)
 {
+    // Using LUV colorspace. Distances in LUV colorspace are more accurate but need more calculations
+    /*
     first.convert_rgb_to_luv();
     second.convert_rgb_to_luv();
 
@@ -123,7 +126,30 @@ float Image::colour_difference(Pixel& first, Pixel& second)
             pow(second.luv_components.l - first.luv_components.l, 2.f) +
             pow(second.luv_components.u - first.luv_components.u, 2.f) +
             pow(second.luv_components.v - first.luv_components.v, 2.f);
+    */
+
+    // Using RGB colorspace
+
+    return
+            pow(second.rgb_components.red - first.rgb_components.red, 2.f) +
+            pow(second.rgb_components.green - first.rgb_components.green, 2.f) +
+            pow(second.rgb_components.blue - first.rgb_components.blue, 2.f);
 
 }
 
+void Image::copy_colour_components(float * buffer)
+{
+    int i = 0;
+    int pixel_iterator = 0;
+
+    while(pixel_iterator < pixels.size())
+    {
+        buffer[i]   = pixels[pixel_iterator].rgb_components.red ;
+        buffer[i+1] = pixels[pixel_iterator].rgb_components.green;
+        buffer[i+2] = pixels[pixel_iterator].rgb_components.blue ;
+        ++pixel_iterator;
+        i+= 3;
+    }
+
+}
 
